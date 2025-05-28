@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Relationship;
@@ -18,7 +19,7 @@ class OfficeSpaceResource extends Resource
 {
     protected static ?string $model = OfficeSpace::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
 
     public static function form(Form $form): Form
     {
@@ -51,7 +52,7 @@ class OfficeSpaceResource extends Resource
                 Forms\Components\Repeater::make('benefits')
                     ->relationship('benefits')
                     ->schema([
-                        Forms\Components\TextInput::make('address')
+                        Forms\Components\TextInput::make('name')
                             ->required(),
                     ]),
 
@@ -91,10 +92,25 @@ class OfficeSpaceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+
+                Tables\Columns\ImageColumn::make('thumbnail'),
+
+                Tables\Columns\TextColumn::make('city.name'),
+
+                Tables\Columns\IconColumn::make('is_full_booked')
+                    ->boolean()
+                    ->trueColor('danger')
+                    ->falseColor('success')
+                    ->trueIcon('heroicon-o-x-circle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->label('Available')
             ])
             ->filters([
-                //
+                SelectFilter::make('city_id')
+                    ->relationship('city', 'name')
+                    ->label('City')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

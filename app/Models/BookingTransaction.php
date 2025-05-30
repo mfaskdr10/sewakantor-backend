@@ -23,12 +23,12 @@ class BookingTransaction extends Model
         'is_paid'
     ];
 
-    public static function generateUniqeTrxId()
+    public static function generateUniqueTrxId()
     {
         $prefix = "SK";
         do {
             $randomString = $prefix . mt_rand(1000, 9999);
-        } while (self::where('booking_trx_id', $randomString)->exist());
+        } while (self::where('booking_trx_id', $randomString)->exists());
 
         return $randomString;
     }
